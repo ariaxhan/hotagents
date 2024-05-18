@@ -2,8 +2,9 @@ from flask import Flask, jsonify
 import threading
 import requests
 from pynput import keyboard
-from Cocoa import NSAlert, NSApplication, NSApp, NSRunningApplication, NSApplicationActivateIgnoringOtherApps
-import AppKit
+import objc
+from Cocoa import NSAlert, NSApplication, NSApp, NSRunningApplication, NSApplicationActivateIgnoringOtherApps, NSObject
+from Foundation import NSThread
 
 app = Flask(__name__)
 
@@ -22,16 +23,21 @@ def show_message():
         data = response.json()
         message = data.get('message', 'No message received')
         
-        show_alert(message)
+        # Call show_alert on the main thread
+        NSThread.performSelectorOnMainThread_withObject_waitUntilDone_(
+            objc.selector(show_alert, signature=b'v@:@'), message, False)
     except requests.RequestException as e:
         print(f"Error fetching message: {e}")
 
 def show_alert(message):
+    # Initialize the application to display the alert
     app = NSApplication.sharedApplication()
     NSApp.activateIgnoringOtherApps_(True)
     
+    # Create and configure the alert
     alert = NSAlert.alloc().init()
     alert.setMessageText_(message)
+    alert.addButtonWithTitle_("OK")
     alert.runModal()
 
 def on_activate():
