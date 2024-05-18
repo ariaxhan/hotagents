@@ -10,10 +10,12 @@
   <p>Press Ctrl + Space to trigger a notification.</p>
   <div id="screenshot-container" style="display: none;">
     <img id="screenshot" src="" alt="Screenshot" style="max-width: 100%;"/>
+    <p id="analysis-result"></p>
     <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/1')">API 1</button>
     <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/2')">API 2</button>
     <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/3')">API 3</button>
     <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/4')">API 4</button>
+    <button onclick="chatgptCall('Tell me a joke')">ChatGPT</button>
   </div>
   <script src="renderer.js"></script>
 </body>
