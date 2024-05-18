@@ -1,0 +1,17 @@
+{
+  "name": "hotagents",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "electron": "^24.8.8",
+    "node-fetch": "^2.7.0",
+    "screenshot-desktop": "^1.15.0"
+  }
+}
