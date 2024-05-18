@@ -10,8 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "agentops": "^0.0.4",
+    "axios": "^1.6.8",
     "electron": "^24.8.8",
     "node-fetch": "^2.7.0",
+    "openai": "^4.47.1",
     "screenshot-desktop": "^1.15.0"
   }
 }
