@@ -8,7 +8,7 @@ const axios = require('axios');
 const FormData = require('form-data');
 
 const openai = new OpenAI({
-  apiKey: 'sk-hotagents-g3gBPsOmRln0srP71E4QT3BlbkFJItlBLZWTeUY6T10sSYBa',
+  apiKey: '',
 });
 
 let mainWindow;
