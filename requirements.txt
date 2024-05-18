@@ -1,0 +1,5 @@
+
+pyautogui
+keyboard
+flask
+requests
