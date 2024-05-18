@@ -9,13 +9,13 @@ app = Flask(__name__)
 
 @app.route('/show_message')
 def show_message_route():
-    message = "Hello, I'm ChatGPT! How can I help you today?"
+    message = "Hello, you pressed Ctrl + Space!"
     return jsonify(message=message)
 
 def run_flask():
-    app.run(port=5000, debug=False)  # Ensure debug is set appropriately
+    app.run(port=5000, debug=False)  # Disable reloader
 
-def show_message():
+def show_popup():
     try:
         response = requests.get('http://127.0.0.1:5000/show_message')
         response.raise_for_status()
@@ -24,18 +24,18 @@ def show_message():
 
         root = tk.Tk()
         root.withdraw()  # Hide the main window
-        messagebox.showinfo("ChatGPT Results", message)
+        messagebox.showinfo("Hotkey Activated", message)
         root.destroy()
     except requests.RequestException as e:
         print(f"Error fetching message: {e}")
 
 def on_activate():
-    show_message()
+    print("Hotkey activated!")
+    show_popup()
 
 def listen_for_hotkey():
     with keyboard.GlobalHotKeys({
-        '<ctrl>+<space>': on_activate
-    }) as h:
+            '<ctrl>+<space>': on_activate}) as h:
         print("Listening for hotkey (Ctrl + Space)... Press Esc to stop.")
         h.join()
 
