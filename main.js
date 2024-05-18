@@ -1,4 +1,8 @@
-const { app, globalShortcut, Notification, BrowserWindow } = require('electron');
+const { app, globalShortcut, BrowserWindow, ipcMain } = require('electron');
+const path = require('path');
+const screenshot = require('screenshot-desktop');
+const fs = require('fs');
+const fetch = require('node-fetch');
 
 let mainWindow;
 
@@ -8,8 +12,9 @@ function createWindow() {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
-    }
+      contextIsolation: false,
+    },
+    show: false,
   });
 
   mainWindow.loadFile('index.html');
@@ -19,11 +24,12 @@ app.whenReady().then(() => {
   createWindow();
 
   // Register a global hotkey
-  globalShortcut.register('Control+Space', () => {
-    new Notification({
-      title: 'Hotkey Activated',
-      body: 'Hello, you pressed Ctrl + Space!'
-    }).show();
+  globalShortcut.register('Control+Space', async () => {
+    const screenshotPath = path.join(app.getPath('userData'), 'screenshot.jpg');
+    await screenshot({ filename: screenshotPath });
+
+    mainWindow.webContents.send('screenshot-taken', screenshotPath);
+    mainWindow.show();
   });
 
   console.log('Listening for hotkey (Ctrl + Space)... Press Ctrl + C to stop.');
@@ -44,4 +50,20 @@ app.on('activate', () => {
 app.on('will-quit', () => {
   // Unregister all global shortcuts
   globalShortcut.unregisterAll();
+});
+
+ipcMain.on('api-call', async (event, apiEndpoint) => {
+  try {
+    const response = await fetch(apiEndpoint);
+    const data = await response.json();
+    new Notification({
+      title: 'API Response',
+      body: JSON.stringify(data),
+    }).show();
+  } catch (error) {
+    new Notification({
+      title: 'API Error',
+      body: error.message,
+    }).show();
+  }
 });
