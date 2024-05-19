@@ -4,19 +4,26 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "tailwind-watch": "npx tailwindcss -i ./input.css -o ./output.css --watch",
+    "tailwind": "npx tailwindcss -i ./input.css -o ./output.css"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^30.0.6",
     "@google/generative-ai": "^0.11.3",
     "agentops": "^0.0.4",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
+    "electron": "^30.0.6",
+    "marked": "^12.0.2",
     "node-fetch": "^2.7.0",
     "openai": "^4.47.1",
+    "prismjs": "^1.29.0",
     "screenshot-desktop": "^1.15.0"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
   }
 }

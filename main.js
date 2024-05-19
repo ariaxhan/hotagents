@@ -118,8 +118,10 @@ async function analyzeScreenshot(screenshotPath, prompt) {
             console.log("\nNEW GENERATION -", value.label);
           } else {
             console.log("\nEND GENERATION -", value.label);
+            mainWindow.webContents.send('update-response', "\n---\n");
           }
         } else if (value.type === "chunk") {
+          mainWindow.webContents.send('update-response', value.value ?? "");
           process.stdout.write(value.value ?? "")
         } else if (value.type === "outputs") {
           console.log(value);
@@ -142,9 +144,10 @@ app.whenReady().then(() => {
   globalShortcut.register('Control+Space', async () => {
     const screenshotPath = path.join(app.getPath('userData'), 'screenshot.jpg'); // Define the path for the screenshot
     await screenshot({ filename: screenshotPath }); // Take a screenshot and save it
-
+    
     mainWindow.webContents.send('screenshot-taken', screenshotPath); // Notify the renderer process that a screenshot was taken
     mainWindow.show(); // Show the main window
+    await analyzeScreenshot(screenshotPath)
   });
 
   console.log('Listening for hotkey (Ctrl + Space)... Press Ctrl + C to stop.');

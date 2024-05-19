@@ -1,34 +1,23 @@
-const { ipcRenderer } = require('electron');
+const { ipcRenderer } = require("electron");
+const { marked } = require("marked");
+const Prism = require('prismjs');
+require('prismjs/components');
+require('prismjs/components/prism-python');
 
-ipcRenderer.on('screenshot-taken', (event, screenshotPath) => {
-  document.getElementById('screenshot-container').style.display = 'block';
-  document.getElementById('screenshot').src = screenshotPath;
+ipcRenderer.on("screenshot-taken", (event, screenshotPath) => {
+  document.getElementById("screenshot").src = screenshotPath;
 });
 
-ipcRenderer.on('analysis-result', (event, analysis) => {
-  document.getElementById('analysis-result').innerText = analysis;
+ipcRenderer.on("analysis-result", (event, analysis) => {
+  document.getElementById("analysis-result").innerText = analysis;
 });
 
-function apiCall(apiEndpoint) {
-  ipcRenderer.send('api-call', apiEndpoint);
-}
+var accumulated_text = "";
 
-function chatgptCall(prompt) {
-  ipcRenderer.send('chatgpt-call', prompt);
-}
-
-function explainThis() {
-  ipcRenderer.send('explain-this');
-}
-
-function draftResponse() {
-  ipcRenderer.send('draft-response');
-}
-
-function recreateWithCode() {
-  ipcRenderer.send('create-with-code');
-}
-
-function proofreadThis() {
-  ipcRenderer.send('proofread-this');
-}
+ipcRenderer.on("update-response", (event, text) => {
+  accumulated_text += text;
+  var responseElement = document.getElementById("response");
+  responseElement.innerHTML = marked.parse(accumulated_text);
+  Prism.highlightAll();
+  responseElement.scrollTop = responseElement.scrollHeight;
+});
