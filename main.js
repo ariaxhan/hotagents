@@ -11,7 +11,7 @@ let mainWindow; // Main application window
 // Function to create the main application window
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 800,
+    width: 900,
     height: 600,
     webPreferences: {
       nodeIntegration: true, // Allow Node.js integration

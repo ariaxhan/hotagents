@@ -1,0 +1,17 @@
+.rectangle11-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+.rectangle11-dummy-container {
+  width: 100%;
+  height: 900px;
+}
+.rectangle11-rectangle1 {
+  width: 422px;
+  height: 293px;
+  border-radius: 25px;
+}
