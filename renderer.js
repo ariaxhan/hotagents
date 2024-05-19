@@ -26,5 +26,9 @@ function draftResponse() {
 }
 
 function recreateWithCode() {
-  ipcRenderer.send('recreate-with-code');
+  ipcRenderer.send('create-with-code');
+}
+
+function proofreadThis() {
+  ipcRenderer.send('proofread-this');
 }
