@@ -121,3 +121,40 @@ function encodeImage(imagePath) {
     });
   });
 }
+
+ipcMain.on('explain-this', async () => {
+  try {
+    const imageUrl = await uploadImage(screenshotPath);
+    const analysis = await analyzeImage(imageUrl, 'explain');
+    mainWindow.webContents.send('analysis-result', analysis);
+  } catch (error) {
+    console.error('Error during analysis process:', error);
+  }
+});
+
+ipcMain.on('draft-response', async () => {
+  try {
+    const imageUrl = await uploadImage(screenshotPath);
+    const analysis = await analyzeImage(imageUrl, 'draft');
+    mainWindow.webContents.send('analysis-result', analysis);
+  } catch (error) {
+    console.error('Error during analysis process:', error);
+  }
+});
+
+ipcMain.on('recreate-with-code', () => {
+  createPopup();
+});
+
+ipcMain.on('selected-language', async (event, language) => {
+  try {
+    const imageUrl = await uploadImage(screenshotPath);
+    const analysis = await analyzeImage(imageUrl, `Recreate this image with code in ${language}.`);
+    mainWindow.webContents.send('analysis-result', analysis);
+    popupWindow.close();
+    mainWindow.show();
+  } catch (error) {
+    console.error('Error during screenshot and analysis process:', error);
+  }
+});
+

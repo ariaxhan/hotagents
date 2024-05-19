@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Language</title>
+</head>
+<body>
+  <h1>Select Language</h1>
+  <p>Enter the coding language you want:</p>
+  <input type="text" id="language" placeholder="e.g., Python, JavaScript">
+  <button onclick="submitLanguage()">Submit</button>
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    function submitLanguage() {
+      const language = document.getElementById('language').value;
+      ipcRenderer.send('selected-language', language);
+    }
+  </script>
+</body>
+</html>

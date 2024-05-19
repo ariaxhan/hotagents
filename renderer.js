@@ -16,3 +16,15 @@ function apiCall(apiEndpoint) {
 function chatgptCall(prompt) {
   ipcRenderer.send('chatgpt-call', prompt);
 }
+
+function explainThis() {
+  ipcRenderer.send('explain-this');
+}
+
+function draftResponse() {
+  ipcRenderer.send('draft-response');
+}
+
+function recreateWithCode() {
+  ipcRenderer.send('recreate-with-code');
+}
