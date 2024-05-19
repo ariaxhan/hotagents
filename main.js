@@ -46,26 +46,93 @@ function fileToGenerativePart(path, mimeType) {
   };
 }
 
-// Function to analyze the screenshot using Gemini
+// Function to analyze the screenshot using wordware
 async function analyzeScreenshot(screenshotPath, prompt) {
-  const apiKey = process.env.GEMINI_API_KEY; // Get API key from environment variable
+    const API_KEY = "sk-8g2hUVAzJdb8YcZliHAovLjT3aQlLMF2rWMeW93crEmMUJc3WFNprm"
+    const promptId = "20ae8e60-c0d1-4f71-a058-ec471373d60a";
+  // First describe the prompt to see which inputs are required
+  const describeResponse = await fetch(
+    `https://app.wordware.ai/api/prompt/${promptId}/describe`,
+    {
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    }
+  );
 
-  if (!apiKey) {
-    throw new Error('Missing GEMINI_API_KEY environment variable'); // Handle missing API key
-  }
+  console.log(await describeResponse.json());
 
-  const genAI = new GoogleGenerativeAI(apiKey); // Initialize Google Generative AI with API key
-  const imagePart = fileToGenerativePart(screenshotPath, 'image/jpeg'); // Convert screenshot to Generative AI Part object
-  const model = genAI.getGenerativeModel({ model: 'gemini-pro-vision' }); // Get the generative model
+  // Then run the prompt, streaming the outputs as they're generated
+  const runResponse = await fetch(
+    `https://app.wordware.ai/api/prompt/${promptId}/run`,
+    {
+      method: "post",
+      body: JSON.stringify({
+        inputs: {
+          topic: "Sugary cereal",
+          // Image inputs have a different format and require a publicly
+          // accessible URL
+          image: { 
+            type: "image",
+            image_url: "https://i.insider.com/602ee9ced3ad27001837f2ac",
+          },
+        },
+      }),
+      headers: {
+        Authorization: `Bearer ${API_KEY}`,
+      },
+    }
+  );
+
+  const reader = runResponse.body.getReader();
+
+  const decoder = new TextDecoder();
+  let buffer = [];
 
   try {
-    const result = await model.generateContent([prompt, imagePart]); // Generate content based on the prompt and image
-    const response = await result.response;
-    const text = response.text();
-    console.log('Analysis result:', text); // Log the analysis result
-    mainWindow.webContents.send('analysis-result', text); // Send the result to the renderer process
-  } catch (error) {
-    console.error('Error during analysis:', error); // Handle errors during analysis
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) {
+        return;
+      }
+
+      const chunk = decoder.decode(value);
+
+      for (let i = 0, len = chunk.length; i < len; ++i) {
+        const isChunkSeparator = chunk[i] === "\n";
+
+        // Keep buffering unless we've hit the end of a data chunk
+        if (!isChunkSeparator) {
+          buffer.push(chunk[i]);
+          continue;
+        }
+
+        const line = buffer.join("").trimEnd();
+
+        // This is the chunk
+        const content = JSON.parse(line);
+        const value = content.value;
+
+  // Here we print the streamed generations
+        if (value.type === "generation") {
+          if (value.state === "start") {
+            console.log("\nNEW GENERATION -", value.label);
+          } else {
+            console.log("\nEND GENERATION -", value.label);
+          }
+        } else if (value.type === "chunk") {
+          process.stdout.write(value.value ?? "")
+        } else if (value.type === "outputs") {
+          console.log(value);
+        }
+
+
+        buffer = [];
+      }
+    }
+  } finally {
+    reader.releaseLock();
   }
 }
 
