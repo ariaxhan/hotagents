@@ -10,7 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "electron": "^24.8.8",
+    "electron": "^30.0.6",
     "node-fetch": "^2.7.0",
     "screenshot-desktop": "^1.15.0"
   }

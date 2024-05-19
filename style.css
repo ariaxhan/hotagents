@@ -1,0 +1,52 @@
+.apibutton {
+    background-color: #ccc; /* Gray background color */
+    color: #333; /* Text color */
+    border: none; /* Remove border */
+    padding: 10px 20px; /* Padding */
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; /* Nicer font */
+    font-size: 16px; /* Font size */
+    cursor: pointer; /* Cursor style */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s ease; /* Smooth transition for background color */
+}
+
+.modbutton {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    padding: 5% 10%; /* Padding */
+    font-weight: bold;
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #f0f0f0;
+    color: #333;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+}
+
+.modality:hover {
+    background-color: #ddd;
+    color: #555;
+    border-color: #aaa;
+}
+
+.modality_img {
+    vertical-align: middle;
+    margin-right: 5px;
+}
+
+.button-container {
+    /* Set the aspect ratio */
+    width: 160px; /* Adjust width as needed */
+    height: 100px; /* Adjust height as needed */
+    position: relative;
+    overflow: hidden;
+}
+
+
+.button img {
+    max-width: 100%;
+    max-height: 100%;
+}
