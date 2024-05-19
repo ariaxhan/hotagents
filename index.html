@@ -4,16 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hotkey Popup</title>
+  <link rel="stylesheet" type="text/css" href="./style.css">
 </head>
 <body>
   <h1>Hotkey Popup</h1>
   <p>Press Ctrl + Space to trigger a notification.</p>
   <div id="screenshot-container" style="display: none;">
     <img id="screenshot" src="" alt="Screenshot" style="max-width: 100%;"/>
-    <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/1')">API 1</button>
-    <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/2')">API 2</button>
-    <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/3')">API 3</button>
-    <button onclick="apiCall('https://jsonplaceholder.typicode.com/posts/4')">API 4</button>
+    <p id="analysis-result"></p>
+    <button onclick="explainThis()">Explain This</button>
+    <button onclick="draftResponse()">Draft a Response</button>
+    <button onclick="recreateWithCode()">Recreate This with Code</button>
+    <button onclick="chatgptCall('Tell me a joke')">ChatGPT</button>
   </div>
   <script src="renderer.js"></script>
 </body>

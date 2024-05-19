@@ -5,6 +5,30 @@ ipcRenderer.on('screenshot-taken', (event, screenshotPath) => {
   document.getElementById('screenshot').src = screenshotPath;
 });
 
+ipcRenderer.on('analysis-result', (event, analysis) => {
+  document.getElementById('analysis-result').innerText = analysis;
+});
+
 function apiCall(apiEndpoint) {
   ipcRenderer.send('api-call', apiEndpoint);
+}
+
+function chatgptCall(prompt) {
+  ipcRenderer.send('chatgpt-call', prompt);
+}
+
+function explainThis() {
+  ipcRenderer.send('explain-this');
+}
+
+function draftResponse() {
+  ipcRenderer.send('draft-response');
+}
+
+function recreateWithCode() {
+  ipcRenderer.send('create-with-code');
+}
+
+function proofreadThis() {
+  ipcRenderer.send('proofread-this');
 }

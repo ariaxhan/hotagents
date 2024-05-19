@@ -1,0 +1,17 @@
+.rectangle2-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+.rectangle2-dummy-container {
+  width: 100%;
+  height: 900px;
+}
+.rectangle2-rectangle2 {
+  width: 422px;
+  height: 293px;
+  border-radius: 25px;
+}

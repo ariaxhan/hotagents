@@ -1,0 +1,16 @@
+.rectangle4-container {
+  width: 100%;
+  display: flex;
+  overflow: auto;
+  min-height: 100vh;
+  align-items: center;
+  flex-direction: column;
+}
+.rectangle4-dummy-container {
+  width: 100%;
+  height: 900px;
+}
+.rectangle4-rectangle4 {
+  width: 368px;
+  height: 239px;
+}
