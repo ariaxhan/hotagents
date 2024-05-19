@@ -5,8 +5,30 @@ const screenshot = require('screenshot-desktop');
 const fs = require('fs');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 require('dotenv').config(); // Load environment variables from .env file
+const FormData = require('form-data');
 
 let mainWindow; // Main application window
+
+const axios = require('axios');
+
+async function uploadImage(imagePath) {
+  const form = new FormData();
+  form.append('image', fs.createReadStream(imagePath));
+
+  try {
+    const response = await axios.post('https://api.imgur.com/3/image', form, {
+      headers: {
+        'Authorization': AUTHORIZATION
+        ...form.getHeaders(),
+      },
+    });
+
+    return response.data.data.link;
+  } catch (error) {
+    console.error('Error uploading image:', error.response?.data || error.message);
+    throw error;
+  }
+}
 
 // Function to create the main application window
 function createWindow() {
@@ -23,33 +45,12 @@ function createWindow() {
   mainWindow.loadFile('index.html'); // Load the main HTML file
 }
 
-// Function to encode image to base64 format
-function encodeImage(imagePath) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(imagePath, (err, data) => {
-      if (err) {
-        reject(err); // Handle file read error
-      } else {
-        resolve(Buffer.from(data).toString('base64')); // Convert image data to base64
-      }
-    });
-  });
-}
-
-// Function to convert file to Generative AI Part object
-function fileToGenerativePart(path, mimeType) {
-  return {
-    inlineData: {
-      data: Buffer.from(fs.readFileSync(path)).toString('base64'), // Encode file to base64
-      mimeType, // Set MIME type of the file
-    },
-  };
-}
-
 // Function to analyze the screenshot using wordware
 async function analyzeScreenshot(screenshotPath, prompt) {
-    const API_KEY = "sk-8g2hUVAzJdb8YcZliHAovLjT3aQlLMF2rWMeW93crEmMUJc3WFNprm"
-    const promptId = "20ae8e60-c0d1-4f71-a058-ec471373d60a";
+    const link = await uploadImage(screenshotPath);
+    console.log(link)
+    const API_KEY = API_KEY;
+    const promptId = PROMPT_ID;
   // First describe the prompt to see which inputs are required
   const describeResponse = await fetch(
     `https://app.wordware.ai/api/prompt/${promptId}/describe`,
@@ -71,7 +72,7 @@ async function analyzeScreenshot(screenshotPath, prompt) {
         inputs: {
           new_input_1: {
             type: "image",
-            image: screenshotPath
+            image_url: link
           }
         }
       }),
