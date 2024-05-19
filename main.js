@@ -18,7 +18,7 @@ async function uploadImage(imagePath) {
   try {
     const response = await axios.post('https://api.imgur.com/3/image', form, {
       headers: {
-        'Authorization': AUTHORIZATION
+        'Authorization': process.env.AUTHORIZATION,
         ...form.getHeaders(),
       },
     });
@@ -49,8 +49,8 @@ function createWindow() {
 async function analyzeScreenshot(screenshotPath, prompt) {
     const link = await uploadImage(screenshotPath);
     console.log(link)
-    const API_KEY = API_KEY;
-    const promptId = PROMPT_ID;
+    const API_KEY = process.env.API_KEY;
+    const promptId = process.env.PROMPT_ID;
   // First describe the prompt to see which inputs are required
   const describeResponse = await fetch(
     `https://app.wordware.ai/api/prompt/${promptId}/describe`,
