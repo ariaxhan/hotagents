@@ -10,17 +10,13 @@
   <h1>Hotkey Popup</h1>
   <p>Press Ctrl + Space to trigger a notification.</p>
   <div id="screenshot-container" style="display: none;">
-    <button class = "apibutton" onclick="apiCall('https://jsonplaceholder.typicode.com/posts/1')">Explain This</button>
-    <button class = "apibutton" onclick="apiCall('https://jsonplaceholder.typicode.com/posts/2')">Draft a response</button>
-    <button class = "apibutton" onclick="apiCall('https://jsonplaceholder.typicode.com/posts/3')">Generate Code</button>
-    <button class = "apibutton" onclick="apiCall('https://jsonplaceholder.typicode.com/posts/4')">Generate Cad </button>
-    <div id="modality-buttons" class="button-container">
-      
-      <button class="modbutton">
-        <img id="screenshot" src="" alt="Screenshot" style="max-width: 100%;"/>
-        Click me with image
-      </button>
-    </div>
+    <img id="screenshot" src="" alt="Screenshot" style="max-width: 100%;"/>
+    <p id="analysis-result"></p>
+    <button onclick="explainThis()">Explain This</button>
+    <button onclick="draftResponse()">Draft a Response</button>
+    <button onclick="recreateWithCode()">Recreate This with Code</button>
+    <button onclick="chatgptCall('Tell me a joke')">ChatGPT</button>
+  </div>
   <script src="renderer.js"></script>
 </body>
 </html>
