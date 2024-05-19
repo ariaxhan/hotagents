@@ -2,7 +2,9 @@ const { app, globalShortcut, BrowserWindow, ipcMain, Notification } = require('e
 const path = require('path');
 const screenshot = require('screenshot-desktop');
 const fs = require('fs');
-const axios = require('axios');
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+require('dotenv').config();
 
 let mainWindow;
 
@@ -31,8 +33,8 @@ app.whenReady().then(() => {
     mainWindow.webContents.send('screenshot-taken', screenshotPath);
     mainWindow.show();
 
-    // Send the screenshot to ChatGPT
-    sendScreenshotToChatGPT(screenshotPath);
+    // Analyze the screenshot using Gemini
+    analyzeScreenshot(screenshotPath);
   });
 
   console.log('Listening for hotkey (Ctrl + Space)... Press Ctrl + C to stop.');
@@ -56,105 +58,45 @@ app.on('will-quit', () => {
 });
 
 ipcMain.on('api-call', async (event, apiEndpoint) => {
-  try {
-    const response = await axios.get(apiEndpoint);
-    const data = response.data;
-    new Notification({
-      title: 'API Response',
-      body: JSON.stringify(data),
-    }).show();
-  } catch (error) {
-    new Notification({
-      title: 'API Error',
-      body: error.message,
-    }).show();
-  }
+  // Removed functionality for demonstration purposes
+  console.log('API call requested:', apiEndpoint);
 });
 
-async function sendScreenshotToChatGPT(imagePath) {
-  try {
-    // Encode the image to base64
-    const base64Image = await encodeImage(imagePath);
-
-    // OpenAI API Key
-    const apiKey = API_KEY
-
-    const headers = {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${apiKey}`
-    };
-
-    const payload = {
-      "model": "gpt-4o",
-      "messages": [
-        {
-          "role": "user",
-          "content": "What’s in this image?"
-        },
-        /*
-        {
-          "role": "user",
-          "content": `data:image/jpeg;base64,${base64Image}`
-        }
-        */
-      ],
-      "max_tokens": 50000
-    };
-
-    const response = await axios.post("https://api.openai.com/v1/chat/completions", payload, { headers });
-
-    console.log(response.data.choices[0].message.content);
-    // Handle the response as needed
-  } catch (error) {
-    console.error('Error sending screenshot to ChatGPT:', error.response ? error.response.data : error.message);
-  }
+function fileToGenerativePart(path, mimeType) {
+  return {
+    inlineData: {
+      data: Buffer.from(fs.readFileSync(path)).toString("base64"),
+      mimeType
+    },
+  };
 }
 
-function encodeImage(imagePath) {
-  return new Promise((resolve, reject) => {
-    fs.readFile(imagePath, (err, data) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(Buffer.from(data).toString('base64'));
-      }
-    });
-  });
+async function analyzeScreenshot(screenshotPath) {
+  // Access your Gemini API key as an environment variable
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey) {
+    throw new Error('Missing GEMINI_API_KEY environment variable');
+  }
+
+  const genAI = new GoogleGenerativeAI(apiKey);
+
+  // Converts the screenshot to a GoogleGenerativeAI.Part object
+  const imagePart = fileToGenerativePart(screenshotPath, "image/jpeg");
+
+ // For image analysis, use the gemini-pro-vision model
+  const model = genAI.getGenerativeModel({ model: "gemini-pro-vision" });
+
+  const prompt = "What's different between this picture?"; // Adjust the prompt as needed
+
+  try {
+    const result = await model.generateContent([prompt, imagePart]);
+    const response = await result.response;
+    const text = response.text();
+    console.log("Analysis result:", text);
+    mainWindow.webContents.send('analysis-result', text);
+  } catch (error) {
+    console.error("Error during analysis:", error);
+    // Optionally send an error message to the renderer process
+  }
 }
-
-ipcMain.on('explain-this', async () => {
-  try {
-    const imageUrl = await uploadImage(screenshotPath);
-    const analysis = await analyzeImage(imageUrl, 'explain');
-    mainWindow.webContents.send('analysis-result', analysis);
-  } catch (error) {
-    console.error('Error during analysis process:', error);
-  }
-});
-
-ipcMain.on('draft-response', async () => {
-  try {
-    const imageUrl = await uploadImage(screenshotPath);
-    const analysis = await analyzeImage(imageUrl, 'draft');
-    mainWindow.webContents.send('analysis-result', analysis);
-  } catch (error) {
-    console.error('Error during analysis process:', error);
-  }
-});
-
-ipcMain.on('recreate-with-code', () => {
-  createPopup();
-});
-
-ipcMain.on('selected-language', async (event, language) => {
-  try {
-    const imageUrl = await uploadImage(screenshotPath);
-    const analysis = await analyzeImage(imageUrl, `Recreate this image with code in ${language}.`);
-    mainWindow.webContents.send('analysis-result', analysis);
-    popupWindow.close();
-    mainWindow.show();
-  } catch (error) {
-    console.error('Error during screenshot and analysis process:', error);
-  }
-});
-
