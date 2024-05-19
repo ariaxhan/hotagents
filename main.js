@@ -69,18 +69,15 @@ async function analyzeScreenshot(screenshotPath, prompt) {
       method: "post",
       body: JSON.stringify({
         inputs: {
-          topic: "Sugary cereal",
-          // Image inputs have a different format and require a publicly
-          // accessible URL
-          image: { 
+          new_input_1: {
             type: "image",
-            image_url: "https://i.insider.com/602ee9ced3ad27001837f2ac",
-          },
-        },
+            image: screenshotPath
+          }
+        }
       }),
       headers: {
-        Authorization: `Bearer ${API_KEY}`,
-      },
+        Authorization: `Bearer ${API_KEY}`
+      }
     }
   );
 
