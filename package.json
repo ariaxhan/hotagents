@@ -14,7 +14,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.11.3",
     "agentops": "^0.0.4",
-    "axios": "^1.6.8",
+    "axios": "^1.8.4",
     "dotenv": "^16.4.5",
     "electron": "^30.0.6",
     "marked": "^12.0.2",
