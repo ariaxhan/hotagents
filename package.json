@@ -20,7 +20,7 @@
     "marked": "^12.0.2",
     "node-fetch": "^2.7.0",
     "openai": "^4.47.1",
-    "prismjs": "^1.29.0",
+    "prismjs": "^1.30.0",
     "screenshot-desktop": "^1.15.0"
   },
   "devDependencies": {
